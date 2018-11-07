@@ -14,6 +14,8 @@ import (
 	st "github.com/markus-wa/demoinfocs-golang/sendtables"
 )
 
+//go:generate ifacemaker -f parser.go -f parsing.go -s Parser -i IParser -p demoinfocs -D -y "IParser is an interface for Parser, intended to be used when mockability is needed." -c "DO NOT EDIT: Auto generated" -o parser_interface.go
+
 /*
 Parser can parse a CS:GO demo.
 Creating a Parser is done via NewParser().

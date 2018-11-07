@@ -5,6 +5,8 @@ import (
 	st "github.com/markus-wa/demoinfocs-golang/sendtables"
 )
 
+//go:generate ifacemaker -f game_state.go -s GameState -i IGameState -p demoinfocs -D -y "IGameState is an interface for GameState, intended to be used when mockability is needed." -c "DO NOT EDIT: Auto generated" -o game_state_interface.go
+
 // GameState contains all game-state relevant information.
 type GameState struct {
 	ingameTick         int
