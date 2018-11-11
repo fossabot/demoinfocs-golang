@@ -7,7 +7,7 @@ import (
 	st "github.com/markus-wa/demoinfocs-golang/sendtables"
 )
 
-// IGameState is an interface for GameState, intended to be used when mockability is needed.
+// IGameState is an auto-generated interface for GameState.
 // GameState contains all game-state relevant information.
 type IGameState interface {
 	// IngameTick returns the latest actual tick number of the server during the game.
@@ -24,7 +24,7 @@ type IGameState interface {
 	TeamTerrorists() *common.TeamState
 	// Participants returns a struct with all currently connected players & spectators and utility functions.
 	// The struct contains references to the original maps so it's always up-to-date.
-	Participants() Participants
+	Participants() IParticipants
 	// GrenadeProjectiles returns a map from entity-IDs to all live grenade projectiles.
 	//
 	// Only constains projectiles currently in-flight or still active (smokes etc.),
