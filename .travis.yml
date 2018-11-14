@@ -20,7 +20,7 @@ install:
 
 before_script:
   # Install interface generator
-  - go get github.com/vburenin/ifacemaker
+  - GO111MODULE=off go get github.com/vburenin/ifacemaker
 
   # Fetch refs for linter
   - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
