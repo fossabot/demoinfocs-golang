@@ -1,6 +1,6 @@
-// Package mock provides basic mocks for IParser, IGameState and IParticipants.
+// Package fake provides basic mocks for IParser, IGameState and IParticipants.
 // See examples/mocking (https://github.com/markus-wa/demoinfocs-golang/tree/master/examples/mocking).
-package mock
+package fake
 
 import (
 	"time"

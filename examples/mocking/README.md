@@ -1,6 +1,6 @@
 # Mocking the parser
 
-This example shows you how to use the provided [`mock` package](https://godoc.org/github.com/markus-wa/demoinfocs-golang/mock) to mock `demoinfocs.IParser` and other parts of the library.
+This example shows you how to use the provided [`fake` package](https://godoc.org/github.com/markus-wa/demoinfocs-golang/fake) to mock `demoinfocs.IParser` and other parts of the library.
 That way you will be able to write useful unit tests for your application.
 
 ## System under test
@@ -35,11 +35,11 @@ import (
 
 	common "github.com/markus-wa/demoinfocs-golang/common"
 	events "github.com/markus-wa/demoinfocs-golang/events"
-	mock "github.com/markus-wa/demoinfocs-golang/mock"
+	fake "github.com/markus-wa/demoinfocs-golang/fake"
 )
 
 func TestCollectKills(t *testing.T) {
-	parser := mock.NewParser()
+	parser := fake.NewParser()
 	kill1 := kill(common.EqAK47)
 	kill2 := kill(common.EqScout)
 	parser.Events[0] = kill1
@@ -63,7 +63,7 @@ func kill(wep common.EquipmentElement) events.Kill {
 }
 ```
 
-As you can see we first create a mocked parser with `mock.NewParser()`.
+As you can see we first create a mocked parser with `fake.NewParser()`.
 
 Then we create two `Kill` events and add them into the `Parser.Events` map.
 The map index indicates at which frame the events will be sent out, in our case that's during the first and second frame, as we just iterate over the slice indices.
@@ -83,11 +83,11 @@ import (
 
 	common "github.com/markus-wa/demoinfocs-golang/common"
 	events "github.com/markus-wa/demoinfocs-golang/events"
-	mock "github.com/markus-wa/demoinfocs-golang/mock"
+	fake "github.com/markus-wa/demoinfocs-golang/fake"
 )
 
 func TestCollectKillsError(t *testing.T) {
-	parser := mock.NewParser()
+	parser := fake.NewParser()
 	expectedErr := errors.New("Test error")
 	parser.On("ParseToEnd").Return(expectedErr)
 

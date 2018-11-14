@@ -8,11 +8,11 @@ import (
 
 	common "github.com/markus-wa/demoinfocs-golang/common"
 	events "github.com/markus-wa/demoinfocs-golang/events"
-	mock "github.com/markus-wa/demoinfocs-golang/mock"
+	fake "github.com/markus-wa/demoinfocs-golang/fake"
 )
 
 func TestCollectKills(t *testing.T) {
-	parser := mock.NewParser()
+	parser := fake.NewParser()
 	kill1 := kill(common.EqAK47)
 	kill2 := kill(common.EqScout)
 	parser.Events[0] = kill1
@@ -36,7 +36,7 @@ func kill(wep common.EquipmentElement) events.Kill {
 }
 
 func TestCollectKillsError(t *testing.T) {
-	parser := mock.NewParser()
+	parser := fake.NewParser()
 	expectedErr := errors.New("Test error")
 	parser.On("ParseToEnd").Return(expectedErr)
 
