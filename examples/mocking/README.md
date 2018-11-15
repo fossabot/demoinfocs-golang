@@ -42,8 +42,8 @@ func TestCollectKills(t *testing.T) {
 	parser := fake.NewParser()
 	kill1 := kill(common.EqAK47)
 	kill2 := kill(common.EqScout)
-	parser.Events[0] = kill1
-	parser.Events[1] = kill2
+	parser.Events[0] = []interface{}{kill1}
+	parser.Events[1] = []interface{}{kill2}
 	parser.On("ParseToEnd").Return(nil) // Return no error
 
 	actual, err := collectKills(parser)

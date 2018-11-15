@@ -11,89 +11,59 @@ import (
 // GameState is a mock for of demoinfocs.IGameState.
 type GameState struct {
 	mock.Mock
-
-	TeamTerroristsVal        common.TeamState
-	TeamCounterTerroristsVal common.TeamState
-	ParticipantsMock         Participants
-	GrenadeProjectilesVal    map[int]*common.GrenadeProjectile
-	InfernosVal              map[int]*common.Inferno
-	EntitiesVal              map[int]*st.Entity
-	BombVal                  common.Bomb
 }
 
 // IngameTick is a mock-implementation of IGameState.IngameTick().
-//
-// Returns the mocked value.
 func (gs *GameState) IngameTick() int {
 	return gs.Called().Int(0)
 }
 
 // TeamCounterTerrorists is a mock-implementation of IGameState.TeamCounterTerrorists().
-//
-// Returns GameState.MockTeamTerrorists.
 func (gs *GameState) TeamCounterTerrorists() *common.TeamState {
-	return &gs.TeamCounterTerroristsVal
+	return gs.Called().Get(0).(*common.TeamState)
 }
 
 // TeamTerrorists is a mock-implementation of IGameState.TeamTerrorists().
-//
-// Returns GameState.MockTeamTerrorists.
 func (gs *GameState) TeamTerrorists() *common.TeamState {
-	return &gs.TeamTerroristsVal
+	return gs.Called().Get(0).(*common.TeamState)
 }
 
 // Participants is a mock-implementation of IGameState.Participants().
-//
-// Returns GameState.ParticioantsMock.
 func (gs *GameState) Participants() dem.IParticipants {
-	return &gs.ParticipantsMock
+	return gs.Called().Get(0).(dem.IParticipants)
 }
 
 // GrenadeProjectiles is a mock-implementation of IGameState.GrenadeProjectiles().
-//
-// Returns GameState.GrenadeProjectilesVal.
 func (gs *GameState) GrenadeProjectiles() map[int]*common.GrenadeProjectile {
-	return gs.GrenadeProjectilesVal
+	return gs.Called().Get(0).(map[int]*common.GrenadeProjectile)
 }
 
 // Infernos is a mock-implementation of IGameState.Infernos().
-//
-// Returns GameState.InfernosVal.
 func (gs *GameState) Infernos() map[int]*common.Inferno {
-	return gs.InfernosVal
+	return gs.Called().Get(0).(map[int]*common.Inferno)
 }
 
 // Entities is a mock-implementation of IGameState.Entities().
-//
-// Returns GameState.EntitiesVal.
 func (gs *GameState) Entities() map[int]*st.Entity {
-	return gs.EntitiesVal
+	return gs.Called().Get(0).(map[int]*st.Entity)
 }
 
 // Bomb is a mock-implementation of IGameState.Bomb().
-//
-// Returns GameState.BombVal.
 func (gs *GameState) Bomb() *common.Bomb {
-	return &gs.BombVal
+	return gs.Called().Get(0).(*common.Bomb)
 }
 
 // TotalRoundsPlayed is a mock-implementation of IGameState.TotalRoundsPlayed().
-//
-// Returns the mocked value.
 func (gs *GameState) TotalRoundsPlayed() int {
 	return gs.Called().Int(0)
 }
 
 // IsWarmupPeriod is a mock-implementation of IGameState.IsWarmupPeriod().
-//
-// Returns the mocked value.
 func (gs *GameState) IsWarmupPeriod() bool {
 	return gs.Called().Bool(0)
 }
 
 // IsMatchStarted is a mock-implementation of IGameState.IsMatchStarted().
-//
-// Returns the mocked value.
 func (gs *GameState) IsMatchStarted() bool {
 	return gs.Called().Bool(0)
 }

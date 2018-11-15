@@ -9,61 +9,34 @@ import (
 // Participants is a mock for of demoinfocs.IParticipants.
 type Participants struct {
 	mock.Mock
-
-	ByUserIDVal      map[int]*common.Player
-	ByEntityIDVal    map[int]*common.Player
-	AllVal           []*common.Player
-	PlayingVal       []*common.Player
-	TeamMembersMock  func(common.Team) []*common.Player
-	FindByHandleMock func(int) *common.Player
 }
 
 // ByUserID is a mock-implementation of IParticipants.ByUserID().
-//
-// Returns Participants.ByUserIDVal.
 func (ptcp *Participants) ByUserID() map[int]*common.Player {
-	return ptcp.ByUserIDVal
+	return ptcp.Called().Get(0).(map[int]*common.Player)
 }
 
 // ByEntityID is a mock-implementation of IParticipants.ByEntityID().
-//
-// Returns Participants.ByEntityIDVal.
 func (ptcp *Participants) ByEntityID() map[int]*common.Player {
-	return ptcp.ByEntityIDVal
+	return ptcp.Called().Get(0).(map[int]*common.Player)
 }
 
 // All is a mock-implementation of IParticipants.All().
-//
-// Returns Participants.AllVal.
 func (ptcp *Participants) All() []*common.Player {
-	return ptcp.AllVal
+	return ptcp.Called().Get(0).([]*common.Player)
 }
 
 // Playing is a mock-implementation of IParticipants.Playing().
-//
-// Returns Participants.PlayingVal.
 func (ptcp *Participants) Playing() []*common.Player {
-	return ptcp.PlayingVal
+	return ptcp.Called().Get(0).([]*common.Player)
 }
 
 // TeamMembers is a mock-implementation of IParticipants.TeamMembers().
-//
-// Returns Participants.TeamMembersMock(team).
 func (ptcp *Participants) TeamMembers(team common.Team) []*common.Player {
-	if ptcp.TeamMembersMock == nil {
-		return nil
-	}
-
-	return ptcp.TeamMembersMock(team)
+	return ptcp.Called().Get(0).([]*common.Player)
 }
 
 // FindByHandle is a mock-implementation of IParticipants.FindByHandle().
-//
-// Returns Participants.FindByHandleMock(handle).
 func (ptcp *Participants) FindByHandle(handle int) *common.Player {
-	if ptcp.FindByHandleMock == nil {
-		return nil
-	}
-
-	return ptcp.FindByHandleMock(handle)
+	return ptcp.Called().Get(0).(*common.Player)
 }

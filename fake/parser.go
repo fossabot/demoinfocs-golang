@@ -17,10 +17,8 @@ import (
 type Parser struct {
 	mock.Mock
 
-	HeaderVal     common.DemoHeader
-	Events        map[int]interface{}
-	NetMessages   map[int]interface{}
-	GameStateMock GameState
+	Events      map[int][]interface{}
+	NetMessages map[int][]interface{}
 
 	eventDispatcher dp.Dispatcher
 	msgDispatcher   dp.Dispatcher
@@ -29,31 +27,29 @@ type Parser struct {
 
 // NewParser returns a new parser mock with pre-initialized Events and NetMessages.
 func NewParser() *Parser {
-	return &Parser{
-		Events:      make(map[int]interface{}),
-		NetMessages: make(map[int]interface{}),
+	p := &Parser{
+		Events:      make(map[int][]interface{}),
+		NetMessages: make(map[int][]interface{}),
 	}
+
+	return p
 }
 
 // ServerClasses is a mock-implementation of IParser.ServerClasses().
 //
-// Not yet implemented.
+// Unfortunately sendtables.ServerClasses currently isn't mockable.
 func (p *Parser) ServerClasses() st.ServerClasses {
-	panic("ServerClasses not implemented")
+	return p.Called().Get(0).(st.ServerClasses)
 }
 
 // Header is a mock-implementation of IParser.Header().
-//
-// Returns Parser.HeaderVal.
 func (p *Parser) Header() common.DemoHeader {
-	return p.HeaderVal
+	return p.Called().Get(0).(common.DemoHeader)
 }
 
 // GameState is a mock-implementation of IParser.GameState().
-//
-// Returns Parser.GameStateMock.
 func (p *Parser) GameState() dem.IGameState {
-	return &p.GameStateMock
+	return p.Called().Get(0).(dem.IGameState)
 }
 
 // CurrentFrame is a mock-implementation of IParser.CurrentFrame().
@@ -61,29 +57,14 @@ func (p *Parser) CurrentFrame() int {
 	return p.Called().Int(0)
 }
 
-/*
-CurrentTime is a mock-implementation of IParser.CurrentTime().
-
-Returns the mocked value as nano-seconds.
-
-	oneMinInNanoSeconds := 1000 * 1000 * 1000 * 60
-	mock.On("CurrentTime").Return(oneMinInNanoSeconds)
-	mock.CurrentTime() // 1 min
-*/
+// CurrentTime is a mock-implementation of IParser.CurrentTime().
 func (p *Parser) CurrentTime() time.Duration {
-	return time.Duration(p.Called().Int(0))
+	return p.Called().Get(0).(time.Duration)
 }
 
-/*
-Progress is a mock-implementation of IParser.Progress().
-
-Returns the mocked value divided by 100.
-
-	mock.On("Progress").Return(55)
-	mock.Progress() // 0.55
-*/
+// Progress is a mock-implementation of IParser.Progress().
 func (p *Parser) Progress() float32 {
-	return float32(p.Called().Int(0)) / 100
+	return p.Called().Get(0).(float32)
 }
 
 // RegisterEventHandler is a mock-implementation of IParser.RegisterEventHandler().
@@ -107,10 +88,9 @@ func (p *Parser) UnregisterNetMessageHandler(identifier dp.HandlerIdentifier) {
 }
 
 // ParseHeader is a mock-implementation of IParser.ParseHeader().
-//
-// Returns Parser.HeaderVal.
 func (p *Parser) ParseHeader() (common.DemoHeader, error) {
-	return p.HeaderVal, nil
+	args := p.Called()
+	return args.Get(0).(common.DemoHeader), args.Error(1)
 }
 
 // ParseToEnd is a mock-implementation of IParser.ParseToEnd().
@@ -119,28 +99,53 @@ func (p *Parser) ParseHeader() (common.DemoHeader, error) {
 //
 // Returns the mocked error value.
 func (p *Parser) ParseToEnd() (err error) {
+	args := p.Called()
+
 	maxFrame := max(p.Events)
 	maxNetMessageFrame := max(p.NetMessages)
 	if maxFrame < maxNetMessageFrame {
 		maxFrame = maxNetMessageFrame
 	}
 
-	for ; p.currentFrame <= maxFrame; p.currentFrame++ {
-		event, ok := p.Events[p.currentFrame]
-		if ok {
-			p.eventDispatcher.Dispatch(event)
-		}
+	for p.currentFrame <= maxFrame {
+		p.parseNextFrame()
+	}
 
-		msg, ok := p.NetMessages[p.currentFrame]
-		if ok {
+	return args.Error(0)
+}
+
+func (p *Parser) parseNextFrame() {
+	events, ok := p.Events[p.currentFrame]
+	if ok {
+		for _, e := range events {
+			p.eventDispatcher.Dispatch(e)
+		}
+	}
+
+	messages, ok := p.NetMessages[p.currentFrame]
+	if ok {
+		for _, msg := range messages {
 			p.msgDispatcher.Dispatch(msg)
 		}
 	}
 
-	return p.Called().Error(0)
+	p.currentFrame++
 }
 
-func max(numbers map[int]interface{}) (maxNumber int) {
+// ParseNextFrame is a mock-implementation of IParser.ParseNextFrame().
+//
+// Dispatches Parser.Events and Parser.NetMessages in the specified order.
+//
+// Returns the mocked bool and error values.
+func (p *Parser) ParseNextFrame() (b bool, err error) {
+	args := p.Called()
+
+	p.parseNextFrame()
+
+	return args.Bool(0), args.Error(1)
+}
+
+func max(numbers map[int][]interface{}) (maxNumber int) {
 	for maxNumber = range numbers {
 		break
 	}
@@ -157,11 +162,4 @@ func max(numbers map[int]interface{}) (maxNumber int) {
 // Not yet implemented.
 func (p *Parser) Cancel() {
 	panic("Cancel not implemented")
-}
-
-// ParseNextFrame is a mock-implementation of IParser.ParseNextFrame().
-//
-// Not yet implemented.
-func (p *Parser) ParseNextFrame() (b bool, err error) {
-	panic("ParseNextFrame not implemented")
 }
