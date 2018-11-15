@@ -35,7 +35,7 @@ func TestParseNextFrameEvents(t *testing.T) {
 	expected := []interface{}{kill(common.EqAK47), kill(common.EqScout)}
 	p.Events = map[int][]interface{}{
 		0: expected,
-		1: []interface{}{kill(common.EqAUG)}, // Kill on second frame that shouldn't be dispatched
+		1: {kill(common.EqAUG)}, // Kill on second frame that shouldn't be dispatched
 	}
 
 	var actual []interface{}
@@ -63,11 +63,11 @@ func TestParseToEndEvents(t *testing.T) {
 	p := fake.NewParser()
 	p.On("ParseToEnd").Return(nil)
 	p.Events = map[int][]interface{}{
-		0: []interface{}{kill(common.EqAK47), kill(common.EqScout)},
-		1: []interface{}{kill(common.EqAUG)},
+		0: {kill(common.EqAK47), kill(common.EqScout)},
+		1: {kill(common.EqAUG)},
 	}
 
-	var expected []interface{}
+	expected := make([]interface{}, 0)
 	for _, events := range p.Events {
 		expected = append(expected, events...)
 	}
@@ -87,11 +87,11 @@ func TestParseToEndNetMessages(t *testing.T) {
 	p := fake.NewParser()
 	p.On("ParseToEnd").Return(nil)
 	p.NetMessages = map[int][]interface{}{
-		0: []interface{}{cmdKey(1, 2, 3), cmdKey(100, 255, 8)},
-		1: []interface{}{msg.CSVCMsg_Menu{DialogType: 1, MenuKeyValues: []byte{1, 55, 99}}},
+		0: {cmdKey(1, 2, 3), cmdKey(100, 255, 8)},
+		1: {msg.CSVCMsg_Menu{DialogType: 1, MenuKeyValues: []byte{1, 55, 99}}},
 	}
 
-	var expected []interface{}
+	expected := make([]interface{}, 0)
 	for _, msges := range p.NetMessages {
 		expected = append(expected, msges...)
 	}
